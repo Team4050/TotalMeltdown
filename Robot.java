@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
@@ -38,6 +39,8 @@ public class Robot extends TimedRobot {
 	//Solenoid
 	DoubleSolenoid FireSolenoid = new DoubleSolenoid(1, 2);
 	
+	//ultrasonic sensor
+	AnalogInput ultraSensor;
 
 	//LinearActuator Varible init
 	Spark LinearActuator;
@@ -72,6 +75,9 @@ public class Robot extends TimedRobot {
 			
 		LoaderLimit = new DigitalInput(0);
 		PneuLimit = new DigitalInput(1);
+
+		//ultrasonic
+		ultraSensor = new AnalogInput(0);
 
 		
 
@@ -108,7 +114,7 @@ public class Robot extends TimedRobot {
 		//Variables
 
 		
-
+		double ultravolt = ultraSensor.getVoltage() / 0.009766;
 		boolean FireMotorReady = false;
 		int direction = xbox.getPOV(0);
 		boolean abutton = xbox.getRawButton(1);
@@ -129,7 +135,8 @@ public class Robot extends TimedRobot {
 				}
 			
 			//Loading Motor
-
+				
+			SmartDashboard.putNumber("UltraVolts", ultravolt);
 
 			if (LoaderLimit.get() == true)
 			{
