@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 
 public class Robot extends TimedRobot {
+	/* TODO: Why are some of these variables "private" and some aren't private or public? */
+	/* TODO: Adding spacing between variable groups (group up all the "Spark"s for example) makes it easier to read */
 	//Dashboard
 	SendableChooser<Integer> FireSpeedSelect = new SendableChooser<>();
 
@@ -51,10 +53,10 @@ public class Robot extends TimedRobot {
 	private SpeedControllerGroup rightSC;
 	//RobotDrive
 	private DifferentialDrive robotDrive;
-	@Override
+	@Override /* TODO: You might want to add a space between the variables above and this method below */
 	public void robotInit() 
 	{
-
+		/* TODO: Some weird spacing here? */
 
 		FireSpeedSelect.setDefaultOption("0", 0);
 		FireSpeedSelect.addOption("10%", 1);
@@ -79,13 +81,13 @@ public class Robot extends TimedRobot {
 		//ultrasonic
 		ultraSensor = new AnalogInput(0);
 
-		
+	/* TODO: Unnecessary space here? Also the tabbing above is kinda odd */
 
 		
-      
+    /* TODO: This line needs to be tabbed in one */
     CameraServer.getInstance().startAutomaticCapture();
 		xbox = new Joystick(0);
-			//Drive Motors
+			//Drive Motors		/* TODO: Why tab in the comments? */
 		FrontLeft = new Spark(0);
 		RearLeft = new Spark(1);
 		FrontRight = new Spark(2);
@@ -105,11 +107,11 @@ public class Robot extends TimedRobot {
 		robotDrive = new DifferentialDrive(leftSC, rightSC);
 		
   }
-
+ /* TODO: There is some mweird spacing around here */
   
   @Override
   public void teleopPeriodic() 
-  {
+  {	/* TODO: More weird spacing? */
 
 		//Variables
 
@@ -121,10 +123,11 @@ public class Robot extends TimedRobot {
 		double rtrigger = xbox.getRawAxis(3);
 		double FireSpeed = 0;
 		boolean rbumper = xbox.getRawButton(6);
-		//Actuator Code
+		//Actuator Code			/* TODO: Some really weird tabbing here */
 			//Linear Actuator
 				if (direction == 180)
-    		{
+    		{ 
+			/* TODO: I am not a fan of the format of these curly braces since they're hard to read, but if you're going to use them, make sure they're indented properly */
      	 		LinearActuator.set(1);
     		} else if(direction == 0)
     		{
@@ -161,7 +164,7 @@ public class Robot extends TimedRobot {
 					LoadMotor.set(0);
 				}
 
-
+				/* TODO: Try using a Switch statement here, it will clean up this code a lot */
 				if (FireSpeedSelect.getSelected() == 0)
 				{
 					FireSpeed = 0;
@@ -204,7 +207,7 @@ public class Robot extends TimedRobot {
 				{
 					FireMotor.set(FireSpeed);
 					FireMotorReady = true;
-					
+				/* TODO: Weird tabbing */
 				xbox.setRumble(RumbleType.kRightRumble, 1);
 				xbox.setRumble(RumbleType.kLeftRumble, 1);
 				}else
@@ -216,7 +219,7 @@ public class Robot extends TimedRobot {
 					xbox.setRumble(RumbleType.kLeftRumble, 0);
 				}
 
-			//Pneumatics
+			//Pneumatics			/* TODO: Try to combine these If statements. Example: if (rbumper && PneuLimit.get() && FireMotorReady == true) {Do things} else {Do other things} */
 				if (rbumper == true)
 				{
 					if (PneuLimit.get() == true)
@@ -239,7 +242,7 @@ public class Robot extends TimedRobot {
 					FireSolenoid.set(DoubleSolenoid.Value.kReverse);
 				}
 
-			//misc
+			//misc  /* TODO: Same thing here, might be able to simplify these if statements */
 				if (FireMotorReady == true)
 				{
 					if (PneuLimit.get() == true)
@@ -255,7 +258,7 @@ public class Robot extends TimedRobot {
 					SmartDashboard.putBoolean("Ready To Fire", false);
 				}
 
-		//Drive Code
+		//Drive Code  /* TODO: Not quite tabbed correctly? */
     robotDrive.tankDrive(-xbox.getRawAxis(1), -xbox.getRawAxis(5));
     
 	}	
