@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+//imports
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 
 public class Robot extends TimedRobot {
+
 	//Dashboard
 	SendableChooser<Integer> FireSpeedSelect = new SendableChooser<>();
 
@@ -55,7 +57,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() 
 	{
 
-
+		//sets speeds for FireSpeedSelect drop down on dashboard
 		FireSpeedSelect.setDefaultOption("0", 0);
 		FireSpeedSelect.addOption("10%", 1);
 		FireSpeedSelect.addOption("20%", 2);
@@ -71,40 +73,42 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putData("Fire Speed", FireSpeedSelect);
 
 		//assigning Data Values
-			//Joysticks
-			
+
+		//Limit Switches	
 		LoaderLimit = new DigitalInput(0);
 		PneuLimit = new DigitalInput(1);
 
-		//ultrasonic
+		//ultrasonic sensor
 		ultraSensor = new AnalogInput(0);
 
+		//camera
+		CameraServer.getInstance().startAutomaticCapture();
 		
-
-		
-      
-    CameraServer.getInstance().startAutomaticCapture();
+		//joysticks
 		xbox = new Joystick(0);
-			//Drive Motors
+
+		//Drive Motors
 		FrontLeft = new Spark(0);
 		RearLeft = new Spark(1);
 		FrontRight = new Spark(2);
 		RearRight = new Spark(3);
-			//Actuator Motors
+
+		//Actuator Motors
 		LinearActuator = new Spark(4);
 		FireMotor = new Spark(5);
 		LoadMotor = new Spark(6);
 		
-		//Invert Motors
+		//Inverts Motors
 		FrontLeft.set(-1);
 		RearLeft.set(-1);
+
 		//Asign Speed Groups
 		leftSC = new SpeedControllerGroup(FrontLeft, RearLeft);
 		rightSC = new SpeedControllerGroup(FrontRight, RearRight);
+
 		//Asign The Drive system
 		robotDrive = new DifferentialDrive(leftSC, rightSC);
-		
-  }
+	}
 
   
   @Override
@@ -113,31 +117,37 @@ public class Robot extends TimedRobot {
 
 		//Variables
 
-		
+		//ultrasonic sensor
 		double ultravolt = ultraSensor.getVoltage() / 0.009766;
+
+		//fire motor
 		boolean FireMotorReady = false;
+
+		// xbox buttons
 		int direction = xbox.getPOV(0);
 		boolean abutton = xbox.getRawButton(1);
 		double rtrigger = xbox.getRawAxis(3);
 		double FireSpeed = 0;
 		boolean rbumper = xbox.getRawButton(6);
+
 		//Actuator Code
+
 			//Linear Actuator
 				if (direction == 180)
     		{
      	 		LinearActuator.set(1);
     		} else if(direction == 0)
     		{
-      		LinearActuator.set(-1);
+      			LinearActuator.set(-1);
     		} else 
     		{
-      		LinearActuator.set(0);
-				}
+      			LinearActuator.set(0);
+			}
 			
-			//Loading Motor
-				
+			//Ultrasonic sensor data output	
 			SmartDashboard.putNumber("UltraVolts", ultravolt);
-
+			
+			//gets status of Loader Limit
 			if (LoaderLimit.get() == true)
 			{
 				SmartDashboard.putBoolean("Frisbee Ready", true);
@@ -146,9 +156,10 @@ public class Robot extends TimedRobot {
 				SmartDashboard.putBoolean("Frisbee Ready", false);
 			}
 			
-				if (abutton == true)
-				{
-					if (LoaderLimit.get() == true)
+			//Loads a frisbee
+			if (abutton == true)
+			{
+				if (LoaderLimit.get() == true)
 					{
 						LoadMotor.set(0.75);
 					}else if (LoaderLimit.get() == false)
@@ -199,14 +210,14 @@ public class Robot extends TimedRobot {
 				}
 
 
-			//Fire Motor
+				//Fire Motor
 				if (rtrigger >= 0.5)
 				{
 					FireMotor.set(FireSpeed);
 					FireMotorReady = true;
 					
-				xbox.setRumble(RumbleType.kRightRumble, 1);
-				xbox.setRumble(RumbleType.kLeftRumble, 1);
+					xbox.setRumble(RumbleType.kRightRumble, 1);
+					xbox.setRumble(RumbleType.kLeftRumble, 1);
 				}else
 				{
 					FireMotor.set(0);
@@ -216,7 +227,7 @@ public class Robot extends TimedRobot {
 					xbox.setRumble(RumbleType.kLeftRumble, 0);
 				}
 
-			//Pneumatics
+				//Pneumatics
 				if (rbumper == true)
 				{
 					if (PneuLimit.get() == true)
@@ -239,7 +250,7 @@ public class Robot extends TimedRobot {
 					FireSolenoid.set(DoubleSolenoid.Value.kReverse);
 				}
 
-			//misc
+			//Gets staus of if Fire Motor is ready
 				if (FireMotorReady == true)
 				{
 					if (PneuLimit.get() == true)
@@ -255,8 +266,8 @@ public class Robot extends TimedRobot {
 					SmartDashboard.putBoolean("Ready To Fire", false);
 				}
 
-		//Drive Code
-    robotDrive.tankDrive(-xbox.getRawAxis(1), -xbox.getRawAxis(5));
+		//Really Lonely Robot Drive Code
+    	robotDrive.tankDrive(-xbox.getRawAxis(1), -xbox.getRawAxis(5));
     
 	}	
 }
